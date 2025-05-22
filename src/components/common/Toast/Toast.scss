@@ -1,0 +1,120 @@
+.toasts-container {
+  position: fixed;
+  top: 25px;
+  right: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Add space between toasts */
+  z-index: 100;
+
+  .toast {
+    background: #fff;
+    position: relative;
+    border-radius: 12px;
+    padding: 20px 35px 20px 25px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    border-left: 6px solid #4070f4;
+    overflow: hidden;
+    transform: translateX(100%); /* Start off-screen to the right */
+    animation: slideIn 0.5s forwards, slideOut 0.5s 5.5s forwards;
+
+    .toast-content {
+      display: flex;
+      align-items: center;
+
+      .icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 35px;
+        width: 35px;
+        background: #4070f4;
+        color: #fff;
+        font-size: 20px;
+        border-radius: 50%;
+        svg {
+          width: 25px;
+          height: 25px;
+        }
+      }
+
+      .message {
+        display: flex;
+        flex-direction: column;
+        margin: 0 20px;
+
+        .text {
+          font-size: 14px;
+          font-weight: 400;
+          color: #666666;
+        }
+        .text.text-1 {
+          font-weight: 600;
+          color: #333;
+        }
+      }
+    }
+    .close {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      padding: 5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .progress {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      height: 3px;
+      width: 100%;
+      background: #ddd;
+    }
+
+    .progress:before {
+      content: "";
+      position: absolute;
+      left: 0; /* Start from the left */
+      bottom: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--toast-color);
+      animation: progress 5s linear forwards;
+      transform-origin: left; /* Ensure it scales from left to right */
+    }
+  }
+
+  @keyframes slideIn {
+    0% {
+      transform: translateX(100%); /* Start off-screen to the right */
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0); /* Move to its normal position */
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideOut {
+    0% {
+      transform: translateX(0); /* Start at its normal position */
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(100%); /* Move off-screen to the right */
+      opacity: 0;
+    }
+  }
+
+  @keyframes progress {
+    0% {
+      transform: scaleX(1); /* Start fully filled */
+    }
+    100% {
+      transform: scaleX(0); /* End empty */
+    }
+  }
+}

@@ -1,15 +1,16 @@
-import React from 'react';
-import { Form, Formik } from "formik";
-import { loginSchema } from "../schemas";
+import React, {useState} from 'react';
+import {Form, Formik} from "formik";
+import {loginSchema} from "../schemas";
 import "../assets/styles/pages/login.scss";
 import Input from "../components/common/Input/Input.jsx";
-import { motion } from "framer-motion";
-import {Plus} from "../svg/index.jsx";
+import {motion} from "framer-motion";
 import Divider from "../components/common/Divider/Devider.jsx";
 import {useDispatch} from "react-redux";
 import {login} from "../slices/auth.js";
 import Button from "../components/common/Button/Button.jsx";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
+import {useToast} from "@/contexts/ToastContext.jsx";
+import Footer from "@/components/common/Footer/Footer.jsx";
 
 const containerVariants = {
     initial: { opacity: 0, y: 40 },
@@ -40,14 +41,33 @@ const childVariants = {
 };
 
 export default function Login() {
+    const [isLoading, setIsLoading] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    //const navigate = useNavigate();
+    const { addToast } = useToast();
+
     const onSubmit = (values) => {
-        dispatch(login(values)).unwrap().then(()=> {
-            navigate("/");
-        })
+        setIsLoading(true);
+
+        setTimeout(() => {
+            dispatch(login(values)).unwrap()
+                .then((user) => {
+                    addToast("info", `Welcome ${user.lastname}, you have been signed in.`);
+                    navigate("/");
+                })
+                .catch(error => {
+                    if (error === "Unauthorized") {
+                        addToast("error", "Invalid email or password. Please try again.");
+                    } else {
+                        addToast("error", "An unexpected error occurred. Please try again later.");
+                    }
+                })
+                .finally(() => {
+                    setIsLoading(false);
+                });
+        }, 2000);
     };
+
 
     return (
         <motion.div
@@ -59,66 +79,49 @@ export default function Login() {
             <div className="login_wrapper">
                 <div className="login_wrap">
                     <motion.div className="login_1" variants={childVariants}>
-                        <img src="/supshare.png" alt="logo" />
+                        <img src="/supshare.png" alt="logo"/>
                     </motion.div>
 
                     <motion.div className="login_2" variants={childVariants}>
                         <div className="login_2_wrap">
                             <Formik
-                                initialValues={{ email: "", password: "" }}
+                                initialValues={{email: "", password: ""}}
                                 validationSchema={loginSchema}
                                 onSubmit={onSubmit}
                             >
                                 {() => (
                                     <Form noValidate>
-                                        <div>
                                             <Input
                                                 name="email"
                                                 type="email"
                                                 placeholder="Enter Your Email Address"
                                             />
-                                        </div>
-                                        <div>
                                             <Input
                                                 name="password"
                                                 type="password"
                                                 placeholder="Enter Your Password"
                                                 bottom
                                             />
-                                        </div>
-                                        <Button label="Log in" />
+                                        <Button type="submit" label="Log in" loading={isLoading}/>
                                     </Form>
                                 )}
                             </Formik>
 
-                            <a
-                                href="/forgot"
+                            <Link
+                                to="/reset-password"
                                 className="forgot_password"
                             >
                                 Forgot password?
-                            </a>
+                            </Link>
 
-                            <Divider />
-
-                            <Button popup label="Create Account" />
+                            <Divider/>
+                            <div className="btn_wrapper" style={{width:'70%'}}>
+                                <Button popup label="Create Account"/>
+                            </div>
 
                         </div>
 
-                        <footer
-                            className="login_footer"
-                        >
-                            <div className="login_footer_wrap">
-                                <a href="/">Francais (FR)</a>
-                                <a href="/">English (EN)</a>
-                                <a href="/">العربية</a>
-                                <motion.div
-                                    href="/"
-                                    className="footer_square"
-                                    whileHover={{scale:1.15}}
-                                    whileTap={{scale:1}}
-                                ><Plus color="#000000" /></motion.div>
-                            </div>
-                        </footer>
+                        <Footer />
                     </motion.div>
                 </div>
             </div>

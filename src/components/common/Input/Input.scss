@@ -2,7 +2,6 @@
 
 .input_wrap {
   position: relative;
-  width: 320px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -82,6 +81,6 @@
 
 @media (min-width: 850px) {
   .input_wrap {
-    width: 360px;
+    width: 100%;
   }
 }

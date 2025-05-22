@@ -1,21 +1,28 @@
-import axiosInstance from "./api";
+import axiosInstance from "./api.js"
 
-const getPublicContent = () => {
-    return axiosInstance.get("/test/all", { withCredentials: true});
-};
+const findUser = (email) => {
+    return axiosInstance
+        .get(
+            `/users/find-user?email=${email}`,
+            {withCredentials: true}
+        )
+        .then((response) => {
+            return response.data;
+        })
 
-const getUserBoard = () => {
-    return axiosInstance.get("/test/user", { withCredentials: true});
-};
-
-const getAdminBoard = () => {
-    return axiosInstance.get("/test/admin", { withCredentials: true});
-};
-
-const UserService = {
-    getPublicContent,
-    getUserBoard,
-    getAdminBoard,
 }
 
-export default UserService;
+const changePassword = (values) => {
+    return axiosInstance.post(
+        "/users/reset-password",
+        values,
+        {withCredentials: true}
+    )
+        .then((response) => {
+            return response.data;
+        })
+}
+
+const services = {findUser, changePassword};
+
+export default services;

@@ -14,7 +14,7 @@ const login = (loginRequest) => {
 }
 const logout = () => {
     return axiosInstance
-        .post("/auth/logout")
+        .post("/auth/logout", null, { withCredentials: true})
         .then(response => {
             return response.data;
         })
